@@ -1,8 +1,8 @@
 import { Button, Stack } from "react-bootstrap";
 import { useShoppingCart } from "../context/ShoppingCartContext";
-import storeItems from "../data/items.json";
 import { formatCurrency } from "../utilities/formatCurrency";
 import { FaTrash } from "react-icons/fa";
+import { FetchItems } from "../services/FetchItems";
 
 type CartItemProps = {
   id: number;
@@ -10,9 +10,11 @@ type CartItemProps = {
 };
 
 export function CartItem({ id, quantity }: CartItemProps) {
-  const { removeFromCart, increaseCartQuantity, decreaseCartQuantity } =
-    useShoppingCart();
+  const { increaseCartQuantity, decreaseCartQuantity } = useShoppingCart();
+  const storeItems = FetchItems();
+
   const item = storeItems.find((i) => i.id === id);
+
   if (item == null) return null;
   return (
     <Stack direction="horizontal" gap={2} className="d-flex align-items-center">
