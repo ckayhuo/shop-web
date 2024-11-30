@@ -201,7 +201,7 @@ Copy code
 
 https://getbootstrap.com/docs/4.0/utilities/colors/#color
 
-### 用 reduce() 计算购物车中所有物品的总数量
+### 用 reduce() 计算购物车中所有物品的总数量 (类似用 for loop 做 sum)
 
 ```tsx
 const cartQuantity = cartItems.reduce(
@@ -333,6 +333,68 @@ if (currItems.find((item) => item.id === id) == null) {
   - 解构并复制 item 对象的所有属性。
   - { ...item, quantity: item.quantity + 1 } 会覆盖 item 中的 quantity 属性，并赋予新的值 (item.quantity + 1)。
     这是一个浅拷贝，用于生成更新后的对象，而不会改变原始对象。
+
+### JS: Async => Promise
+
+`signIn: (email: string, password: string) => Promise<void>;`
+
+This means that the signIn function is `asynchronous` and returns a `Promise` that resolves with no value (void). Here's what each part means:
+
+- Asynchronous Operation:
+
+  - Promise represents a task that will complete in the future. It allows you to perform asynchronous operations, such as:
+    Fetching data from an API.
+  - Authenticating a user.
+  - Reading or writing to a database.
+  - Return Type: Promise<void>:
+
+- The Promise<void> means that when the `signIn` function completes (resolves), it does not return any value.
+  - The function will either:
+  - Resolve successfully (void means no value is returned).
+  - Reject with an error (if something goes wrong).
+
+#### What is a Promise in JavaScript?
+
+A Promise is an object that represents the eventual completion (or failure) of an asynchronous operation and its resulting value. It allows you to write asynchronous code in a cleaner and more readable way, instead of using callback functions.
+
+**How a Promise Works:**
+
+A Promise has three possible states:
+
+- Pending: The initial state, neither fulfilled nor rejected.
+- Fulfilled: The operation completed successfully, and a result is available.
+- Rejected: The operation failed, and an error is available.
+
+**Using a Promise:**
+
+You handle a Promise using `.then()`, `.catch()`, and `.finally()` methods:
+
+`.then()`: Runs when the promise is fulfilled.
+`.catch()`: Runs when the promise is rejected.
+`.finally()`: Runs after the promise is either fulfilled or rejected.
+
+```js
+signIn(email, password) // promise
+  .then(() => {
+    console.log("User signed in successfully.");
+  })
+  .catch((error) => {
+    console.error("Sign-in failed:", error);
+  });
+  .finally(() => {
+    console.log("Operation complete"); // Always runs
+  });
+```
+
+### AuthProvider: React.FC
+
+```tsx
+AuthProvider: React.FC<{ children: React.ReactNode }> = {
+  children,
+};
+```
+
+`React.FC` stands for React Functional Component. It is a TypeScript utility type used to define the shape of a React functional component, including its props and return type. It simplifies the type definition and provides some built-in properties for better developer experience.
 
 ### Event Listener `onClick`
 

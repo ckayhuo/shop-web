@@ -1,7 +1,7 @@
 import { Col, Row } from "react-bootstrap";
 import { StoreItem } from "../components/StoreItem";
 import { useEffect, useState } from "react";
-import "./Style.css";
+import "../utilities/Style.css";
 
 type StoreItem = {
   id: number;

@@ -48,3 +48,7 @@
 * {
   box-sizing: border-box;
 }
+
+.dropdown-toggle::after {
+  display: none;
+}
