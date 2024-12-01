@@ -8,7 +8,7 @@ export function SignIn() {
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("buyer");
   const [error, setError] = useState("");
-  const { login } = useContext(AuthContext);
+  const { login, isAuthenticated } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -17,7 +17,11 @@ export function SignIn() {
 
     try {
       await login({ email, password, role });
-      navigate("/");
+      if (isAuthenticated) {
+        navigate("/");
+      } else {
+        setError("Login failed. Please try again.");
+      }
     } catch (err: any) {
       setError(err.message || "Login failed. Please try again.");
     }

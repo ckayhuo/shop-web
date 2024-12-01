@@ -51,12 +51,12 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
       credentials: "include",
     })
       .then((response) => {
-        if (!response.ok) {
-          return response.json().then((data) => {
-            throw new Error(data.message || "Login failed");
-          });
+        if (response.ok) {
+          return response.json();
         }
-        return response.json();
+        return response.json().then((data) => {
+          throw new Error(data.message || "Login failed");
+        });
       })
       .then((data) => {
         if (data.message === "Login successful") {
@@ -64,6 +64,9 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
           setUser({ email: user.email, role: data.role });
           setIsAuthenticated(true);
         }
+      })
+      .catch((error) => {
+        throw error;
       });
   };
 
