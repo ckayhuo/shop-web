@@ -16,7 +16,10 @@ export function Store() {
   useEffect(() => {
     fetch("http://localhost:5000/api/items")
       .then((response) => response.json())
-      .then((data) => setStoreItems(data));
+      .then((data) => {
+        const productsData = Array.isArray(data) ? data : [data];
+        setStoreItems(productsData);
+      });
   }, []);
 
   return (

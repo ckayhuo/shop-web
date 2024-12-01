@@ -4,7 +4,6 @@ import {
   Dropdown,
   Nav,
   Navbar as NavbarBs,
-  NavItem,
 } from "react-bootstrap";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import Cart from "./cart.png";
@@ -63,8 +62,9 @@ export function Navbar() {
               {isAuthenticated ? (
                 <>
                   <Dropdown.ItemText>
-                    <strong>{user?.email}\n</strong>
-                    <strong>{user?.role}</strong>
+                    {user?.role}
+                    <br />
+                    <strong>{user?.email}</strong>
                   </Dropdown.ItemText>
                   <Dropdown.Divider />
                   <Dropdown.Item onClick={handleLogout}>Logout</Dropdown.Item>

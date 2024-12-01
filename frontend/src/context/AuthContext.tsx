@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect, ReactNode } from "react";
-import { getCookie, removeCookie, setCookie } from "typescript-cookie";
+import { removeCookie, setCookie } from "typescript-cookie";
 
 type AuthContextType = {
   user: { email: string; role: string } | null;
@@ -50,14 +50,19 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
       body: JSON.stringify(user),
       credentials: "include",
     })
-      .then((response) => response.json())
+      .then((response) => {
+        if (!response.ok) {
+          return response.json().then((data) => {
+            throw new Error(data.message || "Login failed");
+          });
+        }
+        return response.json();
+      })
       .then((data) => {
         if (data.message === "Login successful") {
           setCookie("token", data.token, { expires: 1 }); // Set token in cookies
           setUser({ email: user.email, role: data.role });
           setIsAuthenticated(true);
-
-          console.log(data.token);
         }
       });
   };

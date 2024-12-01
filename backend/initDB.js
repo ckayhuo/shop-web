@@ -4,19 +4,19 @@ const db = new sqlite3.Database("./db/database.sqlite");
 
 db.serialize(() => {
   // Create product table
-  // db.run(
-  //   `CREATE TABLE IF NOT EXISTS products (
-  //         id INTEGER PRIMARY KEY AUTOINCREMENT,
-  //         name TEXT NOT NULL,
-  //         price REAL NOT NULL,
-  //         imgUrl TEXT NOT NULL,
-  //         quantity INTEGER NOT NULL,
-  //         sellerId INTEGER NOT NULL,
-  //         FOREIGN KEY (sellerId) REFERENCES users(id)
-  //      )`,
-  //   (err) => {
-  //     if (err) console.error("Error creating products table:", err.message);
-  //   })
+  db.run(
+    `CREATE TABLE IF NOT EXISTS products (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          name TEXT NOT NULL,
+          price REAL NOT NULL,
+          imgUrl TEXT NOT NULL,
+          quantity INTEGER NOT NULL,
+          sellerId INTEGER NOT NULL,
+          FOREIGN KEY (sellerId) REFERENCES users(id)
+       )`,
+    (err) => {
+      if (err) console.error("Error creating products table:", err.message);
+    })
 
 
   db.run(

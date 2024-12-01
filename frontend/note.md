@@ -40,6 +40,32 @@ npm run dev
 
 ## Q&A
 
+### Context(Hook) Invalid hook call. Hooks can only be called inside of the body of a function component.
+
+问题出在你在 fetchProducts 函数中使用了 useState，这违反了 React 的 Hook 规则。useState 只能在 React 函数组件的顶部调用，而不能在普通的函数中调用。
+
+Issue Code:
+
+```tsx
+export function ProductProvider({ children }: { children: ReactNode }) {
+  async function fetchProducts(): Promise<ProductItem[]> {
+    const [products, setProducts] = useState<ProductItem[]>([]);
+    setProducts(products);
+  }
+}
+```
+
+Right Code:
+
+```tsx
+export function ProductProvider({ children }: { children: ReactNode }) {
+  const [products, setProducts] = useState<ProductItem[]>([]);
+  async function fetchProducts(): Promise<ProductItem[]> {
+    setProducts(products);
+  }
+}
+```
+
 ### Export function name is better for large projects
 
 `export default function x()` 默认导出允许你导出一个主要的值或功能，不需要指定名称（可以随便命名在导入时）。

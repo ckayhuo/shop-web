@@ -1,9 +1,9 @@
+require("dotenv").config();
 const express = require("express");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { getDB } = require("../db");
 const router = express.Router();
-const jwt_secret = "JWT_SECRET"
 
 // Sign Up
 router.post("/signup", async (req, res) => {
@@ -35,6 +35,7 @@ router.post("/login", async (req, res) => {
         const db = await getDB();
         const user = await db.get("SELECT * FROM users WHERE email = ? and role = ?", [email, role]);
         if (!user) {
+            console.log("Invalid credential or user doesn't exist")
             return res.status(400).json({ message: "Invalid credential or user doesn't exist" });
         }
 
@@ -43,7 +44,7 @@ router.post("/login", async (req, res) => {
         if (!isMatch) {
             return res.status(400).json({ message: "Invalid credentials" });
         }
-        const token = jwt.sign({ userId: user.id, email: user.email, role: user.role }, jwt_secret, { expiresIn: "1h" });
+        const token = jwt.sign({ userId: user.id, email: user.email, role: user.role }, process.env.JWT_SECRET, { expiresIn: "1h" });
 
         // save token to cookies
         res.cookie("token", token, { httpOnly: true });
@@ -71,8 +72,8 @@ router.get("/check-session", (req, res) => {
     }
 
     try {
-        const decoded = jwt.verify(token, jwt_secret);
-        console.log(`token = ${token}; email=${decoded.email}; role=${decoded.role}`)
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        // console.log(`email=${decoded.email}; role=${decoded.role}`)
         res.status(200).json({ user: { email: decoded.email, role: decoded.role } });
     } catch (error) {
         res.status(401).json({ user: null });

@@ -18,10 +18,8 @@ export function StoreItem({ id, name, price, imgUrl }: StoreItemProps) {
   } = useShoppingCart();
 
     const quantity = getItemQuantity(id);
-//   const quantity = 1;
 
-  return (
-    // 100% height
+  return (    
     <Card className="h-100">
       <Card.Img
         variant="top"
