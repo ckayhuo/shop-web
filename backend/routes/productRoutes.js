@@ -29,7 +29,7 @@ router.get("/", async (req, res) => {
         const products = await stmt.all(userId);
 
         res.status(200).json(products);
-        console.log(products)
+        // console.log(products)
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: "Server error" });
@@ -114,7 +114,6 @@ router.post("/", async (req, res) => {
         );
 
         res.status(201).json({ message: "Product added successfully" });
-        console.log("Add!! product")
 
     } catch (error) {
         console.error(error);
@@ -127,7 +126,7 @@ router.post("/", async (req, res) => {
 //Delete a product
 router.delete("/:id", async (req, res) => {
     const token = req.cookies.token;
-    console.log(`Delete product ${token}`)
+    console.log("Delete product")
 
     if (!token) {
         return res.status(401).json({ message: "Unauthorized" });
@@ -138,8 +137,7 @@ router.delete("/:id", async (req, res) => {
     const role = decoded.role
 
     if (!userId || role !== "seller") {
-        console.log(userId, role)
-        res.status(400).json({ message: "Invalid seller" });
+        res.status(400).json({ message: `Invalid seller ${userId}, ${role}}` });
     }
 
 

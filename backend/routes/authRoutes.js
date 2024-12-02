@@ -27,7 +27,7 @@ router.post("/signup", async (req, res) => {
     }
 });
 
-// Sign In
+// Log In
 router.post("/login", async (req, res) => {
     const { email, password, role } = req.body;
     console.log("loging in")

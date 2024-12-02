@@ -7,10 +7,8 @@ import { ShoppingCartProvider } from "./context/ShoppingCartContext";
 import { ProductProvider } from "./context/ProductContext";
 import { AuthProvider } from "./context/AuthContext";
 import { Product } from "./pages/Product";
-
 import { SignUp } from "./pages/SignUp";
 import { SignIn } from "./pages/SignIn";
-import { ProductModal } from "./pages/ProductModal";
 
 function App() {
   return (
@@ -24,9 +22,8 @@ function App() {
               <Route path="/" element={<Home />} />
               <Route path="/store" element={<Store />} />
               <Route path="/product" element={<Product />} />
-              <Route path="/product2" element={<ProductModal />} />
               <Route path="/signup" element={<SignUp />} />
-              <Route path="/signin" element={<SignIn />} />
+              <Route path="/login" element={<SignIn />} />
             </Routes>
           </Container>
         </ShoppingCartProvider>

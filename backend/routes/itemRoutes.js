@@ -6,7 +6,7 @@ const db = new sqlite3.Database("./db/database.sqlite");
 
 // Get all items
 router.get("/", (req, res) => {
-  db.all("SELECT * FROM items", [], (err, rows) => {
+  db.all("SELECT * FROM products", [], (err, rows) => {
     if (err) {
       res.status(500).json({ error: err.message });
     } else {

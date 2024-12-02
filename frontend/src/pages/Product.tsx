@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Button, Row, Col, Form } from "react-bootstrap";
+import { Button, Row, Col, Form, Modal } from "react-bootstrap";
 import { AuthContext } from "../context/AuthContext";
 import { ProductCard } from "../components/ProductCard";
 import { useProduct } from "../context/ProductContext";
@@ -16,7 +16,7 @@ export function Product() {
   const { user, isAuthenticated } = useContext(AuthContext);
   const [products, setProducts] = useState<ProductItem[]>([]);
   const { fetchProducts, createProduct } = useProduct();
-
+  const [showModal, setShowModal] = useState(false);
   const [newProduct, setNewProduct] = useState({
     name: "",
     price: 1.0,
@@ -30,7 +30,6 @@ export function Product() {
       if (isAuthenticated && user?.role === "seller") {
         try {
           const fetchedProducts = await fetchProducts();
-          console.log(`fetchedProducts = ${fetchedProducts}`);
           setProducts(fetchedProducts);
         } catch (error) {
           console.error(error);
@@ -40,10 +39,18 @@ export function Product() {
     fetchCurrentProducts();
   }, [isAuthenticated, user]);
 
+  const handleCancel = () => {
+    setShowModal(false);
+  };
+
+  // Add new product
+  const handleAdd = () => {
+    setShowModal(true);
+  };
+
   // Add new product
   const handleAddProduct = async (e: React.FormEvent) => {
     e.preventDefault();
-
     try {
       createProduct(JSON.stringify(newProduct));
       setNewProduct({
@@ -52,12 +59,22 @@ export function Product() {
         quantity: 1,
         imgUrl: "",
       });
+
+      setShowModal(false);
       // Refetch products to update UI
       const fetchedProducts = await fetchProducts();
       setProducts(fetchedProducts);
     } catch (error) {
       console.error("Error adding product:", error);
     }
+  };
+
+  const handleProductChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setNewProduct({
+      ...newProduct,
+      [name]: value,
+    });
   };
 
   if (!isAuthenticated || user?.role !== "seller") {
@@ -67,12 +84,8 @@ export function Product() {
   return (
     <div>
       <div className="d-flex align-items-center">
-        <h3>Product List</h3>
-        <Button
-          variant="success"
-          className="ms-auto"
-          onClick={handleAddProduct}
-        >
+        <h3>Your Product List</h3>
+        <Button variant="success" className="ms-auto" onClick={handleAdd}>
           Add Product
         </Button>
       </div>
@@ -84,59 +97,61 @@ export function Product() {
         ))}
       </Row>
 
-      {/* DEBUG: Add New Products */}
-      <h3>Add New Product</h3>
-      <Form onSubmit={handleAddProduct}>
-        <Form.Group className="mb-3" controlId="formProductName">
-          <Form.Label>Product Name</Form.Label>
-          <Form.Control
-            type="text"
-            value={newProduct.name}
-            onChange={(e) =>
-              setNewProduct({ ...newProduct, name: e.target.value })
-            }
-          />
-        </Form.Group>
-        <Form.Group className="mb-3" controlId="formProductPrice">
-          <Form.Label>Price</Form.Label>
-          <Form.Control
-            type="number"
-            value={newProduct.price}
-            onChange={(e) =>
-              setNewProduct({
-                ...newProduct,
-                price: parseFloat(e.target.value),
-              })
-            }
-          />
-        </Form.Group>
-        <Form.Group className="mb-3" controlId="formProductImgUrl">
-          <Form.Label>Image URL</Form.Label>
-          <Form.Control
-            type="text"
-            value={newProduct.imgUrl}
-            onChange={(e) =>
-              setNewProduct({ ...newProduct, imgUrl: e.target.value })
-            }
-          />
-        </Form.Group>
-        <Form.Group className="mb-3" controlId="formProductQuantity">
-          <Form.Label>Quantity</Form.Label>
-          <Form.Control
-            type="number"
-            value={newProduct.quantity}
-            onChange={(e) =>
-              setNewProduct({
-                ...newProduct,
-                quantity: parseInt(e.target.value),
-              })
-            }
-          />
-        </Form.Group>
-        <Button variant="primary" type="submit">
-          Add Product
-        </Button>
-      </Form>
+      {/* Modal for adding a new product */}
+      <Modal show={showModal} onHide={() => setShowModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Add Product</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form>
+            <Form.Group className="mb-3" controlId="formProductName">
+              <Form.Label>Product Name</Form.Label>
+              <Form.Control
+                type="text"
+                name="name"
+                value={newProduct.name}
+                onChange={handleProductChange}
+              />
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="formProductPrice">
+              <Form.Label>Price</Form.Label>
+              <Form.Control
+                type="number"
+                name="price"
+                value={newProduct.price}
+                onChange={handleProductChange}
+              />
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="formProductImgUrl">
+              <Form.Label>Image URL</Form.Label>
+              <Form.Control
+                type="text"
+                name="imgUrl"
+                value={newProduct.imgUrl}
+                onChange={handleProductChange}
+              />
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="formProductQuantity">
+              <Form.Label>Quantity</Form.Label>
+              <Form.Control
+                type="number"
+                name="quantity"
+                value={newProduct.quantity}
+                onChange={handleProductChange}
+              />
+            </Form.Group>
+            {/* Button need to be in Form since it uses FormEvent */}
+            <div className="d-flex justify-content-between">
+              <Button variant="primary" onClick={handleCancel}>
+                Cancel
+              </Button>
+              <Button variant="primary" onClick={handleAddProduct}>
+                Add
+              </Button>
+            </div>
+          </Form>
+        </Modal.Body>
+      </Modal>
     </div>
   );
 }

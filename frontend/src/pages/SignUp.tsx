@@ -14,7 +14,6 @@ export function SignUp() {
     setSuccessMessage("");
 
     try {
-      console.log(JSON.stringify({ email, password, role }));
       const response = await fetch("http://localhost:5000/api/auth/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -22,9 +21,9 @@ export function SignUp() {
       });
       const data = await response.json();
       if (response.ok) {
-        setSuccessMessage("Sign up successful! Sign in now...");
+        setSuccessMessage("Sign up successful! Log in now...");
         setTimeout(() => {
-          window.location.href = "/signin";
+          window.location.href = "/login";
         }, 2000);
       } else {
         setError(data.message);
@@ -93,7 +92,7 @@ export function SignUp() {
 
           <div className="text-center mt-3">
             <p>
-              Have an account? <a href="/signin">Sign In</a>
+              Have an account? <a href="/login">Log In</a>
             </p>
           </div>
         </Col>

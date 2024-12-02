@@ -1,9 +1,14 @@
 import React, { createContext, useState, useEffect, ReactNode } from "react";
+import { useNavigate } from "react-router-dom";
 import { removeCookie, setCookie } from "typescript-cookie";
 
 type AuthContextType = {
   user: { email: string; role: string } | null;
-  login: (user: { email: string; password: string; role: string }) => void;
+  login: (user: {
+    email: string;
+    password: string;
+    role: string;
+  }) => Promise<boolean>;
   logout: () => void;
   isAuthenticated: boolean;
 };
@@ -17,6 +22,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     null
   );
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const navigate = useNavigate();
 
   // Check session on load
   useEffect(() => {
@@ -26,7 +32,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(`data.user = ${data.user}; data.role = ${data.role}`);
         if (data.user) {
           setUser(data.user);
           setIsAuthenticated(true);
@@ -41,33 +46,36 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
       });
   }, []);
 
-  const login = (user: { email: string; password: string; role: string }) => {
-    fetch("http://localhost:5000/api/auth/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(user),
-      credentials: "include",
-    })
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
-        }
-        return response.json().then((data) => {
-          throw new Error(data.message || "Login failed");
-        });
-      })
-      .then((data) => {
-        if (data.message === "Login successful") {
-          setCookie("token", data.token, { expires: 1 }); // Set token in cookies
-          setUser({ email: user.email, role: data.role });
-          setIsAuthenticated(true);
-        }
-      })
-      .catch((error) => {
-        throw error;
+  const login = async (user: {
+    email: string;
+    password: string;
+    role: string;
+  }): Promise<boolean> => {
+    try {
+      const response = await fetch("http://localhost:5000/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(user),
+        credentials: "include",
       });
+
+      const data = await response.json();
+
+      if (response.ok && data.message === "Login successful") {
+        setCookie("token", data.token, { expires: 1 });
+        setUser({ email: user.email, role: data.role });
+        setIsAuthenticated(true);
+        navigate("/"); // Navigate only on success
+        return true;
+      } else {
+        return false;
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      return false;
+    }
   };
 
   const logout = () => {

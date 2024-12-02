@@ -31,9 +31,6 @@ app.use(cookieParser());
 app.use("/api/items", itemsRouter);
 app.use("/api/auth", authRoutes);
 app.use("/api/products", productRoutes);
-// app.get("/api/protected", authMiddleware, (req, res) => {
-//     res.json({ message: `TODO: ${req.user.role}` });
-// });
 
 
 // Start server

@@ -21,22 +21,26 @@ export function Navbar() {
 
   const navigate = useNavigate();
 
-  const handleSignIn = () => navigate("/signin");
+  const handleSignIn = () => navigate("/login");
   const handleLogout = () => logout();
 
   return (
-    <NavbarBs sticky="top" className="shadow-sm mb-3">
+    <NavbarBs
+      sticky="top"
+      className="shadow-sm mb-3"
+      style={{ backgroundColor: "rgba(255, 255, 255, 1)" }}
+    >
       <Container>
         <Nav className="me-auto">
-          <Nav.Link to="/" as={NavLink}>
+          <Nav.Link to="/" as={NavLink} style={{ color: "blue" }}>
             Home
           </Nav.Link>
           {user?.role !== "seller" ? (
-            <Nav.Link to="/store" as={NavLink}>
+            <Nav.Link to="/store" as={NavLink} style={{ color: "blue" }}>
               Store
             </Nav.Link>
           ) : (
-            <Nav.Link to="/product" as={NavLink}>
+            <Nav.Link to="/product" as={NavLink} style={{ color: "blue" }}>
               Product
             </Nav.Link>
           )}
@@ -71,7 +75,7 @@ export function Navbar() {
                 </>
               ) : (
                 <>
-                  <Dropdown.Item onClick={handleSignIn}>Sign In</Dropdown.Item>
+                  <Dropdown.Item onClick={handleSignIn}>Log In</Dropdown.Item>
                 </>
               )}
             </Dropdown.Menu>
